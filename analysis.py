@@ -79,6 +79,16 @@ def categorize(details):
     
     elif 'Customer Transfer' in details or 'Send Money' in details:
         return 'Send Money'
+    elif 'Airtime Purchase' in details:
+            return 'Airtime'
+    elif 'Customer Bundle Purchase' in details:
+            return 'Bundles'
+    elif 'Withdrawal Charge' in details or 'Transaction Charge' in details:
+            return 'Charges'
+    elif 'M-Shwari' in details:
+            return 'Mshwari'
+    else:
+       return "others"    
 
     
 df['Spending'] = df['Details'].apply(categorize)
@@ -104,6 +114,8 @@ def recipient(details):
         return 'Mshwari withdrawal'
     elif 'Deposit of Funds at Agent' in details:
         return "Agent deposit"
+    else :
+        return 'others'
 df['received'] = df['Details'].apply(recipient)
 recieved=(
     df.groupby('received')['Net Amount']
