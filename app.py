@@ -30,6 +30,8 @@ col2.metric('Total Cash out','Ksh 116,831.84')
 col3,col4=st.columns(2)
 col3.metric("Fuliza Credit","Ksh 21,375.84")
 col4.metric("Fuliza Repaid",'Ksh 21,298.57')
+col5,col6=st.columns(2)
+col5.metric('Net Cash Flow','KSh -47,266')
 
 col1 ,col2 =st.columns(2)
 #left line graph Monthly Inflow Vs outflow
@@ -68,13 +70,26 @@ col1 ,col2=st.columns(2)
 #top recepient 
 with col1:
     st.markdown('__________________________________________________________________________________________________')
-    df['Withdrawn'] = df['Withdrawn'].abs()  # converts -30 to 30
-    fig1 = px.pie(
-        data_frame=df,
-        values='Withdrawn',
-        names='Spending',
-        title='Recipients by Amount Sent'
-    )
+    bar_data = (
+    df.groupby("Spending")["Withdrawn"]
+      .sum()
+      .abs()
+      .sort_values(ascending=True)
+      .reset_index()
+)   
+    fig1= px.bar(
+    bar_data,
+    x="Withdrawn",
+    y="Spending",
+    orientation="h",
+    title="Spending by Category"
+)
+
+    fig1.update_xaxes(
+    title="Amount (KSh)",
+    tickprefix="KSh "
+)
+
     st.plotly_chart(fig1, use_container_width=True)
 #fuliza trend over time     
 with col2:
@@ -86,4 +101,4 @@ with col2:
         title= "Fuliza Usage Trend"
     )
     st.plotly_chart(fig2,use_container_width=True)
-# adding the KPI metric 
+
